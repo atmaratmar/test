@@ -1,39 +1,19 @@
 pipeline {
-    agent {
-        docker {
-            image 'docker:24.0.6'
-            args '-v /var/run/docker.sock:/var/run/docker.sock'
-        }
-    }
-
-    environment {
-        IMAGE_NAME = "test-app"
-        IMAGE_TAG = "snapshot-${BUILD_NUMBER}"
-    }
-
+    agent any
     stages {
-        stage('Checkout') {
+        stage('Build') {
             steps {
-                checkout scm
+                echo 'Building...'
             }
         }
-
-        stage('Build Docker Image') {
-            steps {
-                sh "docker version"
-                sh "docker build -t ${IMAGE_NAME}:${IMAGE_TAG} ."
-            }
-        }
-
         stage('Test') {
             steps {
-                echo "Testing..."
+                echo 'Testing...'
             }
         }
-
         stage('Deploy') {
             steps {
-                echo "Built Docker image ${IMAGE_NAME}:${IMAGE_TAG}"
+                echo 'Deploying...'
             }
         }
     }
