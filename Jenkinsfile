@@ -1,7 +1,7 @@
 pipeline {
     agent {
         docker {
-            image 'docker:24.0.6-dind' // or any recent Docker image
+            image 'docker:24.0.6'
             args '-v /var/run/docker.sock:/var/run/docker.sock'
         }
     }
@@ -20,13 +20,14 @@ pipeline {
 
         stage('Build Docker Image') {
             steps {
+                sh "docker version"
                 sh "docker build -t ${IMAGE_NAME}:${IMAGE_TAG} ."
             }
         }
 
         stage('Test') {
             steps {
-                echo 'Testing...'
+                echo "Testing..."
             }
         }
 
