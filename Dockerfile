@@ -1,38 +1,12 @@
-pipeline {
-    agent any
+FROM node:18
 
-    environment {
-        IMAGE_NAME = 'test-app:latest'
-    }
+WORKDIR /app
 
-    stages {
-        stage('Checkout') {
-            steps {
-                checkout scm
-            }
-        }
+COPY package*.json ./
+RUN npm install
 
-        stage('Build Docker Image') {
-            steps {
-                script {
-                    echo "Building Docker image: ${IMAGE_NAME}"
-                    sh 'docker build -t $IMAGE_NAME .'
-                }
-            }
-        }
+COPY . .
 
-        stage('Test') {
-            steps {
-                echo 'Testing (placeholder)...'
-            }
-        }
+EXPOSE 3000
 
-        stage('Deploy') {
-            steps {
-                echo "Image ${IMAGE_NAME} built and ready for deployment"
-                // Example: Run the container (optional)
-                // sh 'docker run -d -p 3000:3000 $IMAGE_NAME'
-            }
-        }
-    }
-}
+CMD ["npm", "start"]
