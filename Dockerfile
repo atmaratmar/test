@@ -1,18 +1,39 @@
-# Use Node.js base image
-FROM node:18
+pipeline {
+    agent any
 
-# Create app directory
-WORKDIR /app
+    environment {
+        IMAGE_NAME = 'atmaratmar/test-app'
+    }
 
-# Copy package.json and install dependencies
-COPY package*.json ./
-RUN npm install
+    stages {
+        stage('Checkout') {
+            steps {
+                checkout scm
+            }
+        }
 
-# Copy the rest of the application
-COPY . .
+        stage('Build') {
+            steps {
+                echo 'Building Docker image...'
+                script {
+                    sh 'docker build -t $IMAGE_NAME .'
+                }
+            }
+        }
 
-# Expose port (change if needed)
-EXPOSE 3000
+        stage('Test') {
+            steps {
+                echo 'Testing (placeholder)...'
+                // Add your test commands if any
+            }
+        }
 
-# Start the app
-CMD ["npm", "start"]
+        stage('Deploy') {
+            steps {
+                echo 'Deploying Docker image...'
+                // Optional: Push to Docker Hub or run the container
+                // sh 'docker run -d -p 3000:3000 $IMAGE_NAME'
+            }
+        }
+    }
+}
