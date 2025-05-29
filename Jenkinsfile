@@ -1,19 +1,14 @@
 pipeline {
     agent any
     stages {
-        stage('Build') {
+        stage('Checkout') {
             steps {
-                echo 'Building...'
+                checkout scm
             }
         }
-        stage('Test') {
+        stage('Build Docker Image') {
             steps {
-                echo 'Testing...'
-            }
-        }
-        stage('Deploy') {
-            steps {
-                echo 'Deploying...'
+                sh 'docker build -t myapp:latest .'
             }
         }
     }
