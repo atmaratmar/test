@@ -1,5 +1,10 @@
 pipeline {
-    agent any
+    agent {
+        docker {
+            image 'docker:24.0.6-dind' // or any recent Docker image
+            args '-v /var/run/docker.sock:/var/run/docker.sock'
+        }
+    }
 
     environment {
         IMAGE_NAME = "test-app"
@@ -15,24 +20,19 @@ pipeline {
 
         stage('Build Docker Image') {
             steps {
-                script {
-                    echo "Building Docker image: ${IMAGE_NAME}:${IMAGE_TAG}"
-                    sh "docker build -t ${IMAGE_NAME}:${IMAGE_TAG} ."
-                }
+                sh "docker build -t ${IMAGE_NAME}:${IMAGE_TAG} ."
             }
         }
 
         stage('Test') {
             steps {
-                echo 'Testing (placeholder)...'
+                echo 'Testing...'
             }
         }
 
         stage('Deploy') {
             steps {
-                echo "Docker image ${IMAGE_NAME}:${IMAGE_TAG} built successfully"
-                // Optional: run the image
-                // sh "docker run -d -p 3000:3000 ${IMAGE_NAME}:${IMAGE_TAG}"
+                echo "Built Docker image ${IMAGE_NAME}:${IMAGE_TAG}"
             }
         }
     }
