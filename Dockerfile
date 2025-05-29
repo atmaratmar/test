@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        IMAGE_NAME = 'atmaratmar/test-app'
+        IMAGE_NAME = 'test-app:latest'
     }
 
     stages {
@@ -12,10 +12,10 @@ pipeline {
             }
         }
 
-        stage('Build') {
+        stage('Build Docker Image') {
             steps {
-                echo 'Building Docker image...'
                 script {
+                    echo "Building Docker image: ${IMAGE_NAME}"
                     sh 'docker build -t $IMAGE_NAME .'
                 }
             }
@@ -24,14 +24,13 @@ pipeline {
         stage('Test') {
             steps {
                 echo 'Testing (placeholder)...'
-                // Add your test commands if any
             }
         }
 
         stage('Deploy') {
             steps {
-                echo 'Deploying Docker image...'
-                // Optional: Push to Docker Hub or run the container
+                echo "Image ${IMAGE_NAME} built and ready for deployment"
+                // Example: Run the container (optional)
                 // sh 'docker run -d -p 3000:3000 $IMAGE_NAME'
             }
         }
