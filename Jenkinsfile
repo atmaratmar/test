@@ -8,7 +8,7 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                git 'https://github.com/your-username/your-repo.git' // or use SCM
+                git 'https://github.com/atmaratmar/test.git' // or use SCM
             }
         }
 
