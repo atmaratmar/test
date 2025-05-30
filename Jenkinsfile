@@ -8,13 +8,17 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                git 'https://github.com/atmaratmar/test.git' // or use SCM
+                git 'https://github.com/atmaratmar/test.git'
             }
         }
 
-        stage('Build with Maven') {
+        stage('Build with Maven (in Docker)') {
             steps {
-                sh 'mvn clean package -DskipTests'
+                script {
+                    docker.image('maven:3.8.5-openjdk-17').inside {
+                        sh 'mvn clean package -DskipTests'
+                    }
+                }
             }
         }
 
