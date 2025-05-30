@@ -1,36 +1,35 @@
 pipeline {
     agent any
+
     environment {
-        DOCKER_IMAGE = "mydockerhubusername/myapp:latest"
+        IMAGE_NAME = "my-springboot-app"
     }
+
     stages {
         stage('Checkout') {
             steps {
-                checkout scm
+                git 'https://github.com/your-username/your-repo.git' // or use SCM
             }
         }
-        stage('Build Docker Image') {
+
+        stage('Build with Maven') {
             steps {
-                sh "docker build -t ${DOCKER_IMAGE} ."
+                sh 'mvn clean package -DskipTests'
             }
         }
-        stage('Push Docker Image') {
+
+        stage('Build Docker Image Locally') {
             steps {
-                withCredentials([usernamePassword(credentialsId: 'docker-hub-creds', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
-                    sh '''
-                      echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
-                      docker push ${DOCKER_IMAGE}
-                    '''
+                script {
+                    docker.build("${IMAGE_NAME}")
                 }
             }
         }
-        stage('Deploy to Swarm') {
-            steps {
-                sh '''
-                  docker service update --image ${DOCKER_IMAGE} myapp_service || \
-                  docker service create --name myapp_service --replicas 3 ${DOCKER_IMAGE}
-                '''
-            }
+    }
+
+    post {
+        success {
+            echo "Docker image '${IMAGE_NAME}' built and available locally."
         }
     }
 }

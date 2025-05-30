@@ -1,12 +1,9 @@
-FROM node:18
-
+FROM maven:3.8.5-openjdk-17 AS build
 WORKDIR /app
-
-COPY package*.json ./
-RUN npm install
-
 COPY . .
+RUN mvn clean package -DskipTests
 
-EXPOSE 3000
-
-CMD ["npm", "start"]
+FROM openjdk:17-jdk-slim
+WORKDIR /app
+COPY --from=build /app/target/*.jar app.jar
+ENTRYPOINT ["java", "-jar", "app.jar"]
