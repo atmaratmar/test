@@ -6,12 +6,6 @@ pipeline {
     }
 
     stages {
-        stage('Checkout') {
-            steps {
-                git 'https://github.com/atmaratmar/test.git'
-            }
-        }
-
         stage('Build with Maven (in Docker)') {
             steps {
                 script {
